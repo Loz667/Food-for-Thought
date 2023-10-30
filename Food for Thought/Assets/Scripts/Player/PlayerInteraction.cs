@@ -34,6 +34,7 @@ public class PlayerInteraction : MonoBehaviour, IKitchenObjectParent
     private void Start()
     {
         gameInput.OnInteractAction += OnInteractAction;
+        gameInput.OnAlternateInteractAction += OnAlternateInteractAction;
     }
 
     private void OnInteractAction(object sender, System.EventArgs e)
@@ -44,21 +45,31 @@ public class PlayerInteraction : MonoBehaviour, IKitchenObjectParent
         }
     }
 
+    private void OnAlternateInteractAction(object sender, EventArgs e)
+    {
+        if (selectedCounter != null)
+        {
+            selectedCounter.AlternateInteract(this);
+        }
+    }
+
     private void Update()
     {
         HandleInteraction();
     }
 
-    private void HandleInteraction() {
+    private void HandleInteraction() 
+    {
         Vector2 inputVector = gameInput.GetMovementVectorNormalized();
 
         Vector3 moveDir = new Vector3(inputVector.x, 0f, inputVector.y);
 
-        if (moveDir != Vector3.zero ) {
+        if (moveDir != Vector3.zero ) 
+        {
             lastInteractDir = moveDir;
         }
 
-        float interactDist = 2f;
+        float interactDist = 1f;
         if (Physics.Raycast(transform.position, lastInteractDir, out RaycastHit hit, interactDist, countersLayerMask))
         {
             if (hit.transform.TryGetComponent(out BaseCounter baseCounter))
